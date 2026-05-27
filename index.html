@@ -236,6 +236,10 @@
     .runaway.free {
       position: fixed;
       z-index: 20;
+      transition:
+        left 560ms cubic-bezier(.18,.95,.2,1),
+        top 560ms cubic-bezier(.18,.95,.2,1),
+        transform 560ms cubic-bezier(.18,.95,.2,1);
     }
 
     .note {
@@ -256,6 +260,8 @@
       background: rgba(255, 255, 255, 0.08);
       box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 18px 38px rgba(0, 0, 0, 0.16);
       text-align: left;
+      transition: transform 260ms cubic-bezier(.2,.9,.22,1), filter 180ms ease;
+      will-change: transform;
     }
 
     .option strong {
@@ -274,7 +280,7 @@
       z-index: 4;
       background: linear-gradient(135deg, rgba(255, 184, 109, 0.28), rgba(255, 116, 191, 0.18));
       box-shadow: 0 18px 44px rgba(255, 184, 109, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.16);
-      transition: transform 220ms cubic-bezier(.2,.8,.2,1);
+      transition: transform 140ms cubic-bezier(.18,1.25,.2,1), filter 160ms ease;
     }
 
     .picker {
@@ -419,19 +425,15 @@
     <section class="card" aria-live="polite">
       <div class="screen active" data-screen="0">
         <div class="eyebrow">важный протокол выходных</div>
-        <h1>Даша, на выходных идем курить кальян?</h1>
-        <p>Вопрос выглядит простым, но где-то рядом уже готовится чай и вечер с хорошим настроением.</p>
+        <h1>на выходных идем курить кальян?</h1>
         <div class="actions">
           <button type="button" data-next>да</button>
           <button class="ghost runaway" type="button" id="noButton">нет</button>
         </div>
-        <div class="note" id="noNote">кнопка “нет” подозрительно нервничает</div>
       </div>
 
       <div class="screen" data-screen="1">
-        <div class="eyebrow">ответ записан</div>
-        <h2>Прекрасно. Система зафиксировала согласие.</h2>
-        <p>Теперь надо выбрать детали. Без скучных анкет, только важные вопросы цивилизованного свидания.</p>
+        <h2>Теперь надо выбрать детали</h2>
         <div class="actions">
           <button type="button" data-next>к деталям</button>
         </div>
@@ -473,7 +475,7 @@
       <div class="screen" data-screen="4">
         <div class="eyebrow">главный вкус</div>
         <h2>Какой вкус кальяна берем?</h2>
-        <p>Четыре варианта без банальностей. Каждый звучит так, будто его выбирали при свечах и с серьезным лицом.</p>
+        <p>Четыре варианта без банальностей.</p>
         <div class="picker">
           <label for="flavor">Вкус</label>
           <select id="flavor">
@@ -491,7 +493,6 @@
       <div class="screen" data-screen="5">
         <div class="eyebrow">бронь настроения</div>
         <h2>Свидание собрано</h2>
-        <p>Маршрут выглядит подозрительно хорошо. Осталось прийти красивыми и не забыть хорошее настроение.</p>
         <div class="summary">
           <div><span>Когда</span><span id="summaryTime">суббота</span></div>
           <div><span>Кухня</span><span>кубанская</span></div>
@@ -499,7 +500,7 @@
           <div><span>Гость вечера</span><span>Даша</span></div>
         </div>
         <div class="actions">
-          <button type="button" id="happyButton">я согласна, это мило</button>
+          <button type="button" id="happyButton">ура</button>
         </div>
         <div class="note" id="finalNote"></div>
       </div>
@@ -519,21 +520,15 @@
     const screens = [...document.querySelectorAll('.screen')];
     const dots = [...document.querySelectorAll('.dot')];
     const noButton = document.getElementById('noButton');
-    const noNote = document.getElementById('noNote');
     const cuisineOptions = document.getElementById('cuisineOptions');
     const cuisineNote = document.getElementById('cuisineNote');
     const kubanButton = document.getElementById('kubanButton');
+    const decoyCuisineButtons = [...document.querySelectorAll('.cuisine:not(.kuban)')];
     const flavor = document.getElementById('flavor');
     const summaryTime = document.getElementById('summaryTime');
     const summaryFlavor = document.getElementById('summaryFlavor');
     const finalNote = document.getElementById('finalNote');
     const happyButton = document.getElementById('happyButton');
-    const noPhrases = [
-      'не туда, Даша, эта кнопка на обеденном перерыве',
-      'кнопка “нет” резко вспомнила важные дела',
-      'почти получилось, но романтика увернулась первой',
-      'нет? сайт делает вид, что не расслышал'
-    ];
     let screen = 0;
     let selectedTime = 'суббота';
     let noCount = 0;
@@ -544,16 +539,43 @@
       dots.forEach((dot, index) => dot.classList.toggle('active', index === screen));
     }
 
-    function jumpNoButton() {
+    function clamp(value, min, max) {
+      return Math.min(Math.max(value, min), max);
+    }
+
+    function jumpNoButton(event) {
       const rect = noButton.getBoundingClientRect();
       const pad = 16;
-      const maxLeft = Math.max(pad, window.innerWidth - rect.width - pad);
-      const maxTop = Math.max(pad, window.innerHeight - rect.height - pad);
-      noButton.classList.add('free');
-      noButton.style.left = `${pad + Math.random() * (maxLeft - pad)}px`;
-      noButton.style.top = `${pad + Math.random() * (maxTop - pad)}px`;
-      noButton.style.transform = `rotate(${Math.random() * 18 - 9}deg)`;
-      noNote.textContent = noPhrases[noCount % noPhrases.length];
+      const pointerX = event?.clientX ?? window.innerWidth / 2;
+      const pointerY = event?.clientY ?? window.innerHeight / 2;
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+      let dx = centerX - pointerX;
+      let dy = centerY - pointerY;
+
+      if (Math.abs(dx) + Math.abs(dy) < 8) {
+        dx = Math.random() > 0.5 ? 1 : -1;
+        dy = Math.random() - 0.5;
+      }
+
+      const length = Math.hypot(dx, dy) || 1;
+      const distance = 190 + (noCount % 3) * 38;
+      const targetLeft = clamp(rect.left + (dx / length) * distance + (Math.random() - 0.5) * 70, pad, window.innerWidth - rect.width - pad);
+      const targetTop = clamp(rect.top + (dy / length) * distance + (Math.random() - 0.5) * 70, pad, window.innerHeight - rect.height - pad);
+
+      if (!noButton.classList.contains('free')) {
+        noButton.style.left = `${rect.left}px`;
+        noButton.style.top = `${rect.top}px`;
+        noButton.classList.add('free');
+        noButton.getBoundingClientRect();
+      }
+
+      requestAnimationFrame(() => {
+        noButton.style.left = `${targetLeft}px`;
+        noButton.style.top = `${targetTop}px`;
+        noButton.style.transform = `rotate(${Math.random() * 16 - 8}deg)`;
+      });
+
       noCount += 1;
     }
 
@@ -569,24 +591,45 @@
     noButton.addEventListener('pointerenter', jumpNoButton);
     noButton.addEventListener('pointerdown', (event) => {
       event.preventDefault();
-      jumpNoButton();
+      jumpNoButton(event);
     });
 
     cuisineOptions.addEventListener('pointermove', (event) => {
       const area = cuisineOptions.getBoundingClientRect();
-      const kuban = kubanButton.getBoundingClientRect();
-      const areaCenterX = area.left + area.width / 2;
-      const areaCenterY = area.top + area.height / 2;
-      const targetX = (event.clientX - areaCenterX) * 0.13;
-      const targetY = (event.clientY - areaCenterY) * 0.13;
-      const safeX = Math.max(-kuban.width * 0.22, Math.min(kuban.width * 0.22, targetX));
-      const safeY = Math.max(-28, Math.min(28, targetY));
-      kubanButton.style.transform = `translate(${safeX}px, ${safeY}px) scale(1.03)`;
-      cuisineNote.textContent = 'кубанская аккуратно приближается к курсору';
+      const kubanCenterX = kubanButton.offsetLeft + kubanButton.offsetWidth / 2;
+      const kubanCenterY = kubanButton.offsetTop + kubanButton.offsetHeight / 2;
+      const pointerX = event.clientX - area.left;
+      const pointerY = event.clientY - area.top;
+      const kubanX = clamp((pointerX - kubanCenterX) * 0.62, -150, 150);
+      const kubanY = clamp((pointerY - kubanCenterY) * 0.62, -86, 86);
+
+      kubanButton.style.transform = `translate(${kubanX}px, ${kubanY}px) scale(1.1) rotate(${kubanX * 0.025}deg)`;
+      kubanButton.style.filter = 'brightness(1.12)';
+
+      decoyCuisineButtons.forEach((button) => {
+        const centerX = button.offsetLeft + button.offsetWidth / 2;
+        const centerY = button.offsetTop + button.offsetHeight / 2;
+        const dx = centerX - pointerX;
+        const dy = centerY - pointerY;
+        const distance = Math.hypot(dx, dy) || 1;
+        const force = clamp((240 - distance) / 240, 0, 1);
+        const escapeX = clamp((dx / distance) * force * 130, -120, 120);
+        const escapeY = clamp((dy / distance) * force * 90, -78, 78);
+
+        button.style.transform = `translate(${escapeX}px, ${escapeY}px) scale(${1 - force * 0.05}) rotate(${escapeX * -0.025}deg)`;
+        button.style.filter = force > 0.25 ? 'brightness(0.82)' : '';
+      });
+
+      cuisineNote.textContent = 'кубанская уверенно идет к курсору';
     });
 
     cuisineOptions.addEventListener('pointerleave', () => {
       kubanButton.style.transform = '';
+      kubanButton.style.filter = '';
+      decoyCuisineButtons.forEach((button) => {
+        button.style.transform = '';
+        button.style.filter = '';
+      });
       cuisineNote.textContent = 'кубанская уже где-то рядом';
     });
 
@@ -608,8 +651,8 @@
     });
 
     happyButton.addEventListener('click', () => {
-      finalNote.textContent = `Готово. ${selectedTime}, кубанская кухня и вкус “${flavor.value}”.`;
-      happyButton.textContent = 'согласие принято красиво';
+      finalNote.textContent = 'отлично, план официально выглядит вкусно';
+      happyButton.textContent = 'ура!';
     });
   </script>
 </body>
