@@ -3,12 +3,20 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Привет, Антон</title>
+  <title>Даша, есть вопрос</title>
   <style>
     :root {
       color-scheme: dark;
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: #0a0815;
+      background: #090714;
+      --glass: rgba(255, 255, 255, 0.1);
+      --line: rgba(255, 255, 255, 0.2);
+      --text: #fff8ff;
+      --muted: rgba(255, 248, 255, 0.72);
+      --pink: #ff74bf;
+      --peach: #ffb86d;
+      --blue: #74ddff;
+      --violet: #a98bff;
     }
 
     * {
@@ -27,46 +35,48 @@
       overflow: hidden;
       display: grid;
       place-items: center;
-      color: #fff;
+      padding: 20px;
+      color: var(--text);
       background:
-        radial-gradient(circle at 20% 18%, rgba(255, 109, 194, 0.38), transparent 34%),
-        radial-gradient(circle at 80% 20%, rgba(88, 199, 255, 0.36), transparent 31%),
-        radial-gradient(circle at 55% 88%, rgba(147, 94, 255, 0.42), transparent 38%),
-        linear-gradient(135deg, #0a0815, #15122b 48%, #070b18);
+        radial-gradient(circle at 18% 18%, rgba(255, 116, 191, 0.36), transparent 34%),
+        radial-gradient(circle at 78% 20%, rgba(116, 221, 255, 0.34), transparent 30%),
+        radial-gradient(circle at 48% 92%, rgba(169, 139, 255, 0.42), transparent 38%),
+        linear-gradient(135deg, #090714, #17112f 48%, #070b18);
     }
 
     body::before {
       content: "";
       position: fixed;
-      inset: -30%;
-      background:
-        conic-gradient(from 120deg, rgba(255, 103, 164, 0.22), rgba(96, 214, 255, 0.2), rgba(164, 116, 255, 0.24), rgba(255, 103, 164, 0.22));
-      filter: blur(70px) saturate(130%);
-      animation: drift 18s ease-in-out infinite alternate;
-      opacity: 0.9;
+      inset: -35%;
+      z-index: 0;
+      background: conic-gradient(from 140deg, rgba(255, 116, 191, 0.23), rgba(255, 184, 109, 0.16), rgba(116, 221, 255, 0.22), rgba(169, 139, 255, 0.24), rgba(255, 116, 191, 0.23));
+      filter: blur(76px) saturate(135%);
+      opacity: 0.95;
+      animation: drift 20s ease-in-out infinite alternate;
     }
 
     .scene {
       position: fixed;
       inset: 0;
+      z-index: 1;
       overflow: hidden;
       perspective: 900px;
+      pointer-events: none;
     }
 
     .orb {
       position: absolute;
       border-radius: 999px;
       filter: blur(18px);
-      opacity: 0.78;
+      opacity: 0.76;
       mix-blend-mode: screen;
-      box-shadow: 0 35px 120px rgba(255, 255, 255, 0.18);
-      animation: float 14s ease-in-out infinite alternate;
+      animation: float 15s ease-in-out infinite alternate;
     }
 
     .orb.one {
       width: 34vmax;
       height: 34vmax;
-      left: -8vmax;
+      left: -9vmax;
       top: 11vh;
       background: radial-gradient(circle at 35% 30%, #ffe1f1, #ff54ba 38%, rgba(255, 84, 186, 0) 72%);
       transform: translateZ(-120px);
@@ -85,66 +95,316 @@
     .orb.three {
       width: 42vmax;
       height: 42vmax;
-      left: 31vw;
+      left: 30vw;
       bottom: -20vmax;
       background: radial-gradient(circle at 44% 35%, #eee2ff, #8a5cff 41%, rgba(138, 92, 255, 0) 73%);
       animation-delay: -9s;
       transform: translateZ(-60px);
     }
 
-    .orb.four {
-      width: 18vmax;
-      height: 18vmax;
-      right: 21vw;
-      bottom: 14vh;
-      background: radial-gradient(circle at 40% 35%, #fff7ca, #ffbd4a 42%, rgba(255, 189, 74, 0) 74%);
-      filter: blur(22px);
-      opacity: 0.46;
-      animation-delay: -2s;
-      transform: translateZ(180px);
-    }
-
-    .message {
+    .app {
       position: relative;
       z-index: 2;
-      padding: clamp(24px, 5vw, 56px) clamp(28px, 7vw, 82px);
-      border: 1px solid rgba(255, 255, 255, 0.18);
-      border-radius: 34px;
-      background: rgba(255, 255, 255, 0.08);
+      width: min(760px, 100%);
+    }
+
+    .card {
+      min-height: min(650px, calc(100vh - 40px));
+      display: grid;
+      align-content: center;
+      gap: 26px;
+      padding: clamp(24px, 6vw, 58px);
+      border: 1px solid var(--line);
+      border-radius: 38px;
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.06));
       box-shadow:
-        0 26px 80px rgba(0, 0, 0, 0.36),
-        inset 0 1px 0 rgba(255, 255, 255, 0.2);
-      backdrop-filter: blur(22px) saturate(150%);
+        0 30px 100px rgba(0, 0, 0, 0.42),
+        inset 0 1px 0 rgba(255, 255, 255, 0.24);
+      backdrop-filter: blur(24px) saturate(150%);
+      overflow: hidden;
+    }
+
+    .card::after {
+      content: "";
+      position: absolute;
+      inset: 1px;
+      border-radius: 37px;
+      background: radial-gradient(circle at 18% 6%, rgba(255, 255, 255, 0.16), transparent 28%);
+      pointer-events: none;
+    }
+
+    .screen {
+      position: relative;
+      z-index: 1;
+      display: none;
+      animation: pop 420ms ease both;
+    }
+
+    .screen.active {
+      display: grid;
+      gap: 24px;
+    }
+
+    .eyebrow {
+      width: fit-content;
+      margin: 0 auto;
+      padding: 8px 14px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--muted);
+      font-size: 14px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    h1,
+    h2 {
+      margin: 0;
+      text-align: center;
+      text-wrap: balance;
+      text-shadow: 0 16px 45px rgba(0, 0, 0, 0.36);
     }
 
     h1 {
-      margin: 0;
-      font-size: clamp(42px, 9vw, 112px);
-      line-height: 0.95;
-      letter-spacing: -0.07em;
+      font-size: clamp(40px, 8vw, 88px);
+      line-height: 0.96;
+      letter-spacing: -0.065em;
+    }
+
+    h2 {
+      font-size: clamp(32px, 6vw, 62px);
+      line-height: 1;
+      letter-spacing: -0.055em;
+    }
+
+    p {
+      max-width: 560px;
+      margin: 0 auto;
+      color: var(--muted);
+      font-size: clamp(17px, 3vw, 22px);
+      line-height: 1.45;
       text-align: center;
       text-wrap: balance;
-      text-shadow: 0 14px 45px rgba(0, 0, 0, 0.4);
+    }
+
+    .actions,
+    .options {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 14px;
+    }
+
+    button,
+    select {
+      font: inherit;
+    }
+
+    button {
+      min-height: 54px;
+      border: 0;
+      border-radius: 999px;
+      padding: 16px 26px;
+      color: #160818;
+      background: linear-gradient(135deg, #fff8fb, #ffd1e9 48%, #ffb86d);
+      box-shadow: 0 16px 38px rgba(255, 116, 191, 0.25);
+      cursor: pointer;
+      transition: transform 180ms ease, filter 180ms ease, box-shadow 180ms ease;
+    }
+
+    button:hover {
+      transform: translateY(-2px) scale(1.02);
+      filter: brightness(1.05);
+      box-shadow: 0 20px 48px rgba(255, 116, 191, 0.34);
+    }
+
+    button:active {
+      transform: translateY(1px) scale(0.99);
+    }
+
+    .ghost {
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.1);
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18), 0 14px 34px rgba(0, 0, 0, 0.16);
+    }
+
+    .runaway {
+      will-change: transform, left, top;
+    }
+
+    .runaway.free {
+      position: fixed;
+      z-index: 20;
+    }
+
+    .note {
+      min-height: 28px;
+      color: rgba(255, 248, 255, 0.78);
+      font-size: 15px;
+      text-align: center;
+    }
+
+    .option {
+      position: relative;
+      min-width: min(100%, 190px);
+      flex: 1 1 190px;
+      padding: 18px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 24px;
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.08);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 18px 38px rgba(0, 0, 0, 0.16);
+      text-align: left;
+    }
+
+    .option strong {
+      display: block;
+      margin-bottom: 7px;
+      font-size: 20px;
+    }
+
+    .option span {
+      color: rgba(255, 248, 255, 0.68);
+      font-size: 14px;
+      line-height: 1.35;
+    }
+
+    .kuban {
+      z-index: 4;
+      background: linear-gradient(135deg, rgba(255, 184, 109, 0.28), rgba(255, 116, 191, 0.18));
+      box-shadow: 0 18px 44px rgba(255, 184, 109, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.16);
+      transition: transform 220ms cubic-bezier(.2,.8,.2,1);
+    }
+
+    .picker {
+      display: grid;
+      gap: 12px;
+      max-width: 560px;
+      margin: 0 auto;
+    }
+
+    label {
+      color: rgba(255, 248, 255, 0.84);
+      font-size: 16px;
+    }
+
+    select {
+      width: 100%;
+      min-height: 62px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 22px;
+      padding: 0 18px;
+      color: var(--text);
+      background: rgba(21, 15, 38, 0.92);
+      box-shadow: 0 20px 48px rgba(0, 0, 0, 0.2);
+      outline: none;
+    }
+
+    .time-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      max-width: 470px;
+      margin: 0 auto;
+    }
+
+    .time-grid button {
+      width: 100%;
+    }
+
+    .summary {
+      display: grid;
+      gap: 12px;
+      max-width: 520px;
+      margin: 0 auto;
+    }
+
+    .summary div {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 14px 16px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.07);
+    }
+
+    .summary span:first-child {
+      color: rgba(255, 248, 255, 0.62);
+    }
+
+    .summary span:last-child {
+      font-weight: 700;
+      text-align: right;
+    }
+
+    .dots {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.24);
+    }
+
+    .dot.active {
+      width: 24px;
+      background: linear-gradient(90deg, var(--pink), var(--peach));
+    }
+
+    @media (max-width: 560px) {
+      body {
+        padding: 12px;
+      }
+
+      .card {
+        min-height: calc(100vh - 24px);
+        border-radius: 28px;
+      }
+
+      .actions,
+      .options {
+        flex-direction: column;
+      }
+
+      button,
+      .option {
+        width: 100%;
+      }
+
+      .time-grid {
+        grid-template-columns: 1fr;
+        width: 100%;
+      }
+
+      .summary div {
+        display: grid;
+        gap: 5px;
+      }
+
+      .summary span:last-child {
+        text-align: left;
+      }
     }
 
     @keyframes drift {
-      from {
-        transform: rotate(0deg) scale(1);
-      }
-
-      to {
-        transform: rotate(18deg) scale(1.12);
-      }
+      from { transform: rotate(0deg) scale(1); }
+      to { transform: rotate(20deg) scale(1.12); }
     }
 
     @keyframes float {
-      from {
-        translate: -2vw -2vh;
-      }
+      from { translate: -2vw -2vh; }
+      to { translate: 3vw 4vh; }
+    }
 
-      to {
-        translate: 3vw 4vh;
-      }
+    @keyframes pop {
+      from { opacity: 0; transform: translateY(12px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
     }
   </style>
 </head>
@@ -153,10 +413,204 @@
     <div class="orb one"></div>
     <div class="orb two"></div>
     <div class="orb three"></div>
-    <div class="orb four"></div>
   </div>
-  <main class="message">
-    <h1>Привет, Антон</h1>
+
+  <main class="app">
+    <section class="card" aria-live="polite">
+      <div class="screen active" data-screen="0">
+        <div class="eyebrow">важный протокол выходных</div>
+        <h1>Даша, на выходных идем курить кальян?</h1>
+        <p>Вопрос выглядит простым, но где-то рядом уже готовится чай и вечер с хорошим настроением.</p>
+        <div class="actions">
+          <button type="button" data-next>да</button>
+          <button class="ghost runaway" type="button" id="noButton">нет</button>
+        </div>
+        <div class="note" id="noNote">кнопка “нет” подозрительно нервничает</div>
+      </div>
+
+      <div class="screen" data-screen="1">
+        <div class="eyebrow">ответ записан</div>
+        <h2>Прекрасно. Система зафиксировала согласие.</h2>
+        <p>Теперь надо выбрать детали. Без скучных анкет, только важные вопросы цивилизованного свидания.</p>
+        <div class="actions">
+          <button type="button" data-next>к деталям</button>
+        </div>
+      </div>
+
+      <div class="screen cuisine-screen" data-screen="2">
+        <div class="eyebrow">пункт питания</div>
+        <h2>Выбери кухню до кальяна</h2>
+        <p>Тут все честно: можно нажать куда угодно, но кубанская очень старается быть выбранной.</p>
+        <div class="options" id="cuisineOptions">
+          <button class="option cuisine" type="button" data-cuisine="Азиатская">
+            <strong>Азиатская</strong>
+            <span>лапша, соусы, загадочное “остренько”</span>
+          </button>
+          <button class="option cuisine" type="button" data-cuisine="Грузинская">
+            <strong>Грузинская</strong>
+            <span>хачапури смотрит уверенно</span>
+          </button>
+          <button class="option cuisine kuban" type="button" data-cuisine="Кубанская" id="kubanButton">
+            <strong>Кубанская</strong>
+            <span>просто решила быть судьбой</span>
+          </button>
+        </div>
+        <div class="note" id="cuisineNote">кубанская уже где-то рядом</div>
+      </div>
+
+      <div class="screen" data-screen="3">
+        <div class="eyebrow">суббота</div>
+        <h2>Во сколько встречаемся?</h2>
+        <p>Выбери время. Сайт обещает не спорить, он сегодня вежливый.</p>
+        <div class="time-grid">
+          <button type="button" data-time="12:00">12:00</button>
+          <button type="button" data-time="14:00">14:00</button>
+          <button type="button" data-time="16:00">16:00</button>
+          <button type="button" data-time="18:00">18:00</button>
+        </div>
+      </div>
+
+      <div class="screen" data-screen="4">
+        <div class="eyebrow">главный вкус</div>
+        <h2>Какой вкус кальяна берем?</h2>
+        <p>Четыре варианта без банальностей. Каждый звучит так, будто его выбирали при свечах и с серьезным лицом.</p>
+        <div class="picker">
+          <label for="flavor">Вкус</label>
+          <select id="flavor">
+            <option>Мед, инжир и черный чай</option>
+            <option>Айва, шафран и белый виноград</option>
+            <option>Груша, гречишный мед и печеное яблоко</option>
+            <option>Личи, розовая вода и бергамот</option>
+          </select>
+        </div>
+        <div class="actions">
+          <button type="button" data-finish>утвердить вкус</button>
+        </div>
+      </div>
+
+      <div class="screen" data-screen="5">
+        <div class="eyebrow">бронь настроения</div>
+        <h2>Свидание собрано</h2>
+        <p>Маршрут выглядит подозрительно хорошо. Осталось прийти красивыми и не забыть хорошее настроение.</p>
+        <div class="summary">
+          <div><span>Когда</span><span id="summaryTime">суббота</span></div>
+          <div><span>Кухня</span><span>кубанская</span></div>
+          <div><span>Кальян</span><span id="summaryFlavor">Мед, инжир и черный чай</span></div>
+          <div><span>Гость вечера</span><span>Даша</span></div>
+        </div>
+        <div class="actions">
+          <button type="button" id="happyButton">я согласна, это мило</button>
+        </div>
+        <div class="note" id="finalNote"></div>
+      </div>
+
+      <div class="dots" aria-hidden="true">
+        <span class="dot active"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+      </div>
+    </section>
   </main>
+
+  <script>
+    const screens = [...document.querySelectorAll('.screen')];
+    const dots = [...document.querySelectorAll('.dot')];
+    const noButton = document.getElementById('noButton');
+    const noNote = document.getElementById('noNote');
+    const cuisineOptions = document.getElementById('cuisineOptions');
+    const cuisineNote = document.getElementById('cuisineNote');
+    const kubanButton = document.getElementById('kubanButton');
+    const flavor = document.getElementById('flavor');
+    const summaryTime = document.getElementById('summaryTime');
+    const summaryFlavor = document.getElementById('summaryFlavor');
+    const finalNote = document.getElementById('finalNote');
+    const happyButton = document.getElementById('happyButton');
+    const noPhrases = [
+      'не туда, Даша, эта кнопка на обеденном перерыве',
+      'кнопка “нет” резко вспомнила важные дела',
+      'почти получилось, но романтика увернулась первой',
+      'нет? сайт делает вид, что не расслышал'
+    ];
+    let screen = 0;
+    let selectedTime = 'суббота';
+    let noCount = 0;
+
+    function show(nextScreen) {
+      screen = nextScreen;
+      screens.forEach((item, index) => item.classList.toggle('active', index === screen));
+      dots.forEach((dot, index) => dot.classList.toggle('active', index === screen));
+    }
+
+    function jumpNoButton() {
+      const rect = noButton.getBoundingClientRect();
+      const pad = 16;
+      const maxLeft = Math.max(pad, window.innerWidth - rect.width - pad);
+      const maxTop = Math.max(pad, window.innerHeight - rect.height - pad);
+      noButton.classList.add('free');
+      noButton.style.left = `${pad + Math.random() * (maxLeft - pad)}px`;
+      noButton.style.top = `${pad + Math.random() * (maxTop - pad)}px`;
+      noButton.style.transform = `rotate(${Math.random() * 18 - 9}deg)`;
+      noNote.textContent = noPhrases[noCount % noPhrases.length];
+      noCount += 1;
+    }
+
+    function chooseKuban() {
+      cuisineNote.textContent = 'кубанская выбрана. она очень убедительная.';
+      setTimeout(() => show(3), 520);
+    }
+
+    document.querySelectorAll('[data-next]').forEach((button) => {
+      button.addEventListener('click', () => show(screen + 1));
+    });
+
+    noButton.addEventListener('pointerenter', jumpNoButton);
+    noButton.addEventListener('pointerdown', (event) => {
+      event.preventDefault();
+      jumpNoButton();
+    });
+
+    cuisineOptions.addEventListener('pointermove', (event) => {
+      const area = cuisineOptions.getBoundingClientRect();
+      const kuban = kubanButton.getBoundingClientRect();
+      const areaCenterX = area.left + area.width / 2;
+      const areaCenterY = area.top + area.height / 2;
+      const targetX = (event.clientX - areaCenterX) * 0.13;
+      const targetY = (event.clientY - areaCenterY) * 0.13;
+      const safeX = Math.max(-kuban.width * 0.22, Math.min(kuban.width * 0.22, targetX));
+      const safeY = Math.max(-28, Math.min(28, targetY));
+      kubanButton.style.transform = `translate(${safeX}px, ${safeY}px) scale(1.03)`;
+      cuisineNote.textContent = 'кубанская аккуратно приближается к курсору';
+    });
+
+    cuisineOptions.addEventListener('pointerleave', () => {
+      kubanButton.style.transform = '';
+      cuisineNote.textContent = 'кубанская уже где-то рядом';
+    });
+
+    document.querySelectorAll('.cuisine').forEach((button) => {
+      button.addEventListener('click', chooseKuban);
+    });
+
+    document.querySelectorAll('[data-time]').forEach((button) => {
+      button.addEventListener('click', () => {
+        selectedTime = `суббота, ${button.dataset.time}`;
+        summaryTime.textContent = selectedTime;
+        show(4);
+      });
+    });
+
+    document.querySelector('[data-finish]').addEventListener('click', () => {
+      summaryFlavor.textContent = flavor.value;
+      show(5);
+    });
+
+    happyButton.addEventListener('click', () => {
+      finalNote.textContent = `Готово. ${selectedTime}, кубанская кухня и вкус “${flavor.value}”.`;
+      happyButton.textContent = 'согласие принято красиво';
+    });
+  </script>
 </body>
 </html>
