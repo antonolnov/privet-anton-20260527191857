@@ -253,9 +253,13 @@
         transform 520ms cubic-bezier(.18,.95,.18,1);
     }
 
+    .runaway.evading {
+      pointer-events: none;
+    }
+
     .note {
       min-height: 28px;
-      color: rgba(255, 248, 255, 0.78);
+      color: rgba(91, 52, 71, 0.7);
       font-size: 15px;
       text-align: center;
     }
@@ -351,7 +355,7 @@
     .option span {
       position: relative;
       z-index: 1;
-      color: rgba(255, 248, 255, 0.68);
+      color: rgba(91, 52, 71, 0.64);
       font-size: 14px;
       line-height: 1.35;
       transition: opacity 260ms ease, transform 420ms ease, filter 420ms ease;
@@ -502,6 +506,40 @@
       animation: sparkFly var(--duration) cubic-bezier(.14,.78,.22,1) forwards;
     }
 
+    .spark.confetti {
+      width: calc(var(--size) * 0.75);
+      height: calc(var(--size) * 1.9);
+      border-radius: 5px;
+      animation-name: confettiFly;
+    }
+
+    .party {
+      position: fixed;
+      left: var(--x);
+      top: var(--y);
+      z-index: 61;
+      font-size: var(--size);
+      line-height: 1;
+      pointer-events: none;
+      translate: -50% -50%;
+      filter: drop-shadow(0 10px 16px rgba(207, 120, 154, 0.22));
+      animation: partyFly var(--duration) cubic-bezier(.14,.78,.22,1) forwards;
+    }
+
+    .celebration-ring {
+      position: fixed;
+      left: var(--x);
+      top: var(--y);
+      z-index: 59;
+      width: 26px;
+      height: 26px;
+      border: 2px solid rgba(245, 169, 199, 0.75);
+      border-radius: 999px;
+      pointer-events: none;
+      translate: -50% -50%;
+      animation: ringPop 900ms ease-out forwards;
+    }
+
     @media (max-width: 560px) {
       body {
         padding: 12px;
@@ -599,6 +637,54 @@
       100% {
         opacity: 0;
         transform: translate3d(var(--tx), var(--ty), 0) scale(0.12);
+      }
+    }
+
+    @keyframes confettiFly {
+      0% {
+        opacity: 0;
+        transform: translate3d(0, 0, 0) rotate(0deg) scale(0.8);
+      }
+
+      10% {
+        opacity: 1;
+      }
+
+      100% {
+        opacity: 0;
+        transform: translate3d(var(--tx), var(--ty), 0) rotate(var(--spin)) scale(0.65);
+      }
+    }
+
+    @keyframes partyFly {
+      0% {
+        opacity: 0;
+        transform: translate3d(0, 0, 0) rotate(0deg) scale(0.55);
+      }
+
+      12% {
+        opacity: 1;
+      }
+
+      72% {
+        opacity: 1;
+      }
+
+      100% {
+        opacity: 0;
+        transform: translate3d(var(--tx), var(--ty), 0) rotate(var(--spin)) scale(1.28);
+      }
+    }
+
+    @keyframes ringPop {
+      0% {
+        opacity: 0.9;
+        transform: scale(0.5);
+      }
+
+      100% {
+        opacity: 0;
+        transform: scale(11);
       }
     }
   </style>
@@ -738,22 +824,36 @@
       return Math.min(Math.max(value, min), max);
     }
 
-    function moveNoButton(event) {
-      const rect = noButton.getBoundingClientRect();
-      const pad = 18;
-      const pointerX = event?.clientX ?? window.innerWidth / 2;
-      const pointerY = event?.clientY ?? window.innerHeight / 2;
-      const centerX = rect.left + rect.width / 2;
-      const centerY = rect.top + rect.height / 2;
-      let dx = centerX - pointerX;
-      let dy = centerY - pointerY;
+    function pickRunawayTarget(pointerX, pointerY, width, height) {
+      const pad = clamp(Math.min(window.innerWidth, window.innerHeight) * 0.09, 42, 86);
+      const maxLeft = Math.max(pad, window.innerWidth - width - pad);
+      const maxTop = Math.max(pad, window.innerHeight - height - pad);
+      const centerX = window.innerWidth / 2;
+      const centerY = window.innerHeight / 2;
+      let best = { left: centerX - width / 2, top: centerY - height / 2, score: -Infinity };
 
-      if (Math.abs(dx) + Math.abs(dy) < 8) {
-        dx = Math.random() > 0.5 ? 1 : -1;
-        dy = Math.random() - 0.5;
+      for (let i = 0; i < 44; i += 1) {
+        const left = pad + Math.random() * Math.max(1, maxLeft - pad);
+        const top = pad + Math.random() * Math.max(1, maxTop - pad);
+        const x = left + width / 2;
+        const y = top + height / 2;
+        const fromPointer = Math.hypot(x - pointerX, y - pointerY);
+        const fromCenter = Math.hypot(x - centerX, y - centerY);
+        const edgePenalty = Math.max(0, 170 - Math.min(left, top, window.innerWidth - left - width, window.innerHeight - top - height));
+        const score = fromPointer - fromCenter * 0.14 - edgePenalty * 1.4;
+
+        if (score > best.score) {
+          best = { left, top, score };
+        }
       }
 
-      const length = Math.hypot(dx, dy) || 1;
+      return best;
+    }
+
+    function moveNoButton(event) {
+      const rect = noButton.getBoundingClientRect();
+      const pointerX = event?.clientX ?? window.innerWidth / 2;
+      const pointerY = event?.clientY ?? window.innerHeight / 2;
 
       if (!noDetached) {
         noButton.style.left = `${rect.left}px`;
@@ -765,16 +865,16 @@
         noButton.getBoundingClientRect();
       }
 
-      const travel = Math.min(Math.max(window.innerWidth, window.innerHeight) * 0.24, 330);
-      const driftX = (Math.random() - 0.5) * 90;
-      const driftY = (Math.random() - 0.5) * 90;
-      const finalLeft = clamp(rect.left + (dx / length) * travel + driftX, pad, window.innerWidth - rect.width - pad);
-      const finalTop = clamp(rect.top + (dy / length) * travel + driftY, pad, window.innerHeight - rect.height - pad);
+      noButton.classList.add('evading');
+      clearTimeout(noButton.evadeTimer);
+      noButton.evadeTimer = setTimeout(() => noButton.classList.remove('evading'), 620);
+
+      const target = pickRunawayTarget(pointerX, pointerY, rect.width, rect.height);
 
       requestAnimationFrame(() => {
-        noButton.style.left = `${finalLeft}px`;
-        noButton.style.top = `${finalTop}px`;
-        noButton.style.transform = `rotate(${(finalLeft - rect.left) * 0.035}deg)`;
+        noButton.style.left = `${target.left}px`;
+        noButton.style.top = `${target.top}px`;
+        noButton.style.transform = `rotate(${(target.left - rect.left) * 0.028}deg)`;
       });
     }
 
@@ -801,30 +901,62 @@
       const rect = origin.getBoundingClientRect();
       const startX = rect.left + rect.width / 2;
       const startY = rect.top + rect.height / 2;
-      const colors = ['#fff7fb', '#f5a9c7', '#ffd1c8', '#f2c8ea', '#e7dfff'];
+      const colors = ['#ff7fae', '#f5a9c7', '#ffd1c8', '#f2c8ea', '#e7dfff', '#ffffff'];
+      const emoji = ['💗', '💖', '✨', '🌸', '🎀', '🫶'];
 
-      for (let burst = 0; burst < 3; burst += 1) {
+      for (let ringIndex = 0; ringIndex < 3; ringIndex += 1) {
+        const ring = document.createElement('span');
+        ring.className = 'celebration-ring';
+        ring.style.setProperty('--x', `${startX}px`);
+        ring.style.setProperty('--y', `${startY}px`);
+        ring.style.animationDelay = `${ringIndex * 120}ms`;
+        ring.addEventListener('animationend', () => ring.remove());
+        document.body.appendChild(ring);
+      }
+
+      for (let burst = 0; burst < 5; burst += 1) {
         setTimeout(() => {
-          for (let index = 0; index < 34; index += 1) {
+          for (let index = 0; index < 54; index += 1) {
             const spark = document.createElement('span');
             const angle = -Math.PI / 2 + (Math.random() - 0.5) * Math.PI * 1.55;
-            const distance = 90 + Math.random() * 190;
-            const lift = 25 + Math.random() * 70;
+            const distance = 130 + Math.random() * 310;
+            const lift = 45 + Math.random() * 120;
             const tx = Math.cos(angle) * distance;
             const ty = Math.sin(angle) * distance - lift;
 
-            spark.className = 'spark';
-            spark.style.setProperty('--x', `${startX + (Math.random() - 0.5) * 34}px`);
-            spark.style.setProperty('--y', `${startY + (Math.random() - 0.5) * 22}px`);
+            spark.className = Math.random() > 0.45 ? 'spark confetti' : 'spark';
+            spark.style.setProperty('--x', `${startX + (Math.random() - 0.5) * 70}px`);
+            spark.style.setProperty('--y', `${startY + (Math.random() - 0.5) * 40}px`);
             spark.style.setProperty('--tx', `${tx}px`);
             spark.style.setProperty('--ty', `${ty}px`);
-            spark.style.setProperty('--size', `${5 + Math.random() * 7}px`);
-            spark.style.setProperty('--duration', `${900 + Math.random() * 650}ms`);
+            spark.style.setProperty('--size', `${8 + Math.random() * 12}px`);
+            spark.style.setProperty('--duration', `${1250 + Math.random() * 950}ms`);
             spark.style.setProperty('--color', colors[Math.floor(Math.random() * colors.length)]);
+            spark.style.setProperty('--spin', `${Math.random() * 900 - 450}deg`);
             spark.addEventListener('animationend', () => spark.remove());
             document.body.appendChild(spark);
           }
-        }, burst * 180);
+
+          for (let index = 0; index < 12; index += 1) {
+            const party = document.createElement('span');
+            const angle = -Math.PI / 2 + (Math.random() - 0.5) * Math.PI * 1.35;
+            const distance = 120 + Math.random() * 260;
+            const tx = Math.cos(angle) * distance;
+            const ty = Math.sin(angle) * distance - 70 - Math.random() * 90;
+
+            party.className = 'party';
+            party.textContent = emoji[Math.floor(Math.random() * emoji.length)];
+            party.style.setProperty('--x', `${startX + (Math.random() - 0.5) * 50}px`);
+            party.style.setProperty('--y', `${startY + (Math.random() - 0.5) * 24}px`);
+            party.style.setProperty('--tx', `${tx}px`);
+            party.style.setProperty('--ty', `${ty}px`);
+            party.style.setProperty('--size', `${20 + Math.random() * 20}px`);
+            party.style.setProperty('--duration', `${1400 + Math.random() * 850}ms`);
+            party.style.setProperty('--spin', `${Math.random() * 520 - 260}deg`);
+            party.addEventListener('animationend', () => party.remove());
+            document.body.appendChild(party);
+          }
+        }, burst * 150);
       }
     }
 
