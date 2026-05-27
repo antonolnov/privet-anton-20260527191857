@@ -6,17 +6,17 @@
   <title>Даша, есть вопрос</title>
   <style>
     :root {
-      color-scheme: dark;
+      color-scheme: light;
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: #2d2635;
-      --glass: rgba(255, 246, 250, 0.13);
-      --line: rgba(255, 238, 246, 0.22);
-      --text: #fff9fb;
-      --muted: rgba(255, 248, 251, 0.72);
-      --pink: #f6adc8;
-      --peach: #ffd2ae;
-      --blue: #c9d7f3;
-      --violet: #d5c2ec;
+      background: #fff0f6;
+      --glass: rgba(255, 255, 255, 0.46);
+      --line: rgba(226, 143, 174, 0.28);
+      --text: #5b3447;
+      --muted: rgba(91, 52, 71, 0.68);
+      --pink: #f5a9c7;
+      --peach: #ffd1c8;
+      --blue: #e7dfff;
+      --violet: #f2c8ea;
     }
 
     * {
@@ -38,10 +38,10 @@
       padding: 20px;
       color: var(--text);
       background:
-        radial-gradient(circle at 16% 26%, rgba(246, 173, 200, 0.28), transparent 34%),
-        radial-gradient(circle at 78% 18%, rgba(201, 215, 243, 0.26), transparent 32%),
-        radial-gradient(circle at 52% 88%, rgba(255, 210, 174, 0.25), transparent 38%),
-        linear-gradient(135deg, #2d2635, #4a405b 48%, #65485e);
+        radial-gradient(circle at 14% 20%, rgba(255, 206, 222, 0.78), transparent 32%),
+        radial-gradient(circle at 82% 18%, rgba(255, 232, 240, 0.72), transparent 34%),
+        radial-gradient(circle at 50% 92%, rgba(255, 209, 200, 0.58), transparent 38%),
+        linear-gradient(135deg, #fff7fb, #ffe6f0 45%, #ffd7e8);
     }
 
     body::before {
@@ -49,9 +49,9 @@
       position: fixed;
       inset: -35%;
       z-index: 0;
-      background: conic-gradient(from 140deg, rgba(246, 173, 200, 0.2), rgba(255, 210, 174, 0.14), rgba(201, 215, 243, 0.15), rgba(213, 194, 236, 0.18), rgba(246, 173, 200, 0.2));
-      filter: blur(88px) saturate(110%);
-      opacity: 0.72;
+      background: conic-gradient(from 140deg, rgba(245, 169, 199, 0.26), rgba(255, 209, 200, 0.18), rgba(255, 244, 248, 0.26), rgba(242, 200, 234, 0.18), rgba(245, 169, 199, 0.26));
+      filter: blur(92px) saturate(104%);
+      opacity: 0.64;
       animation: drift 20s ease-in-out infinite alternate;
     }
 
@@ -68,7 +68,7 @@
       position: absolute;
       border-radius: 999px;
       filter: blur(18px);
-      opacity: 0.58;
+      opacity: 0.46;
       mix-blend-mode: screen;
       animation: float 15s ease-in-out infinite alternate;
     }
@@ -78,7 +78,7 @@
       height: 34vmax;
       left: -9vmax;
       top: 11vh;
-      background: radial-gradient(circle at 35% 30%, #fff6fa, #f6adc8 42%, rgba(246, 173, 200, 0) 72%);
+      background: radial-gradient(circle at 35% 30%, #fffafd, #f5a9c7 46%, rgba(245, 169, 199, 0) 72%);
       transform: translateZ(-120px);
     }
 
@@ -87,7 +87,7 @@
       height: 29vmax;
       right: -7vmax;
       top: 8vh;
-      background: radial-gradient(circle at 36% 34%, #f4f7ff, #c9d7f3 40%, rgba(201, 215, 243, 0) 72%);
+      background: radial-gradient(circle at 36% 34%, #fff7fb, #f2c8ea 44%, rgba(242, 200, 234, 0) 72%);
       animation-delay: -5s;
       transform: translateZ(80px);
     }
@@ -97,7 +97,7 @@
       height: 42vmax;
       left: 30vw;
       bottom: -20vmax;
-      background: radial-gradient(circle at 44% 35%, #fff4ee, #ffd2ae 42%, rgba(255, 210, 174, 0) 73%);
+      background: radial-gradient(circle at 44% 35%, #fff9f8, #ffd1c8 44%, rgba(255, 209, 200, 0) 73%);
       animation-delay: -9s;
       transform: translateZ(-60px);
     }
@@ -114,13 +114,13 @@
       align-content: center;
       gap: 26px;
       padding: clamp(24px, 6vw, 58px);
-      border: 1px solid var(--line);
+      border: 1px solid rgba(255, 255, 255, 0.62);
       border-radius: 38px;
-      background: linear-gradient(145deg, rgba(255, 246, 250, 0.18), rgba(255, 246, 250, 0.08));
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.66), rgba(255, 244, 249, 0.42));
       box-shadow:
-        0 30px 100px rgba(56, 38, 60, 0.38),
-        inset 0 1px 0 rgba(255, 255, 255, 0.22);
-      backdrop-filter: blur(24px) saturate(118%);
+        0 28px 90px rgba(207, 120, 154, 0.22),
+        inset 0 1px 0 rgba(255, 255, 255, 0.78);
+      backdrop-filter: blur(24px) saturate(112%);
       overflow: hidden;
     }
 
@@ -129,7 +129,7 @@
       position: absolute;
       inset: 1px;
       border-radius: 37px;
-      background: radial-gradient(circle at 18% 6%, rgba(255, 246, 250, 0.18), transparent 28%);
+      background: radial-gradient(circle at 18% 6%, rgba(255, 255, 255, 0.44), transparent 30%);
       pointer-events: none;
     }
 
@@ -149,9 +149,9 @@
       width: fit-content;
       margin: 0 auto;
       padding: 8px 14px;
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(226, 143, 174, 0.24);
       border-radius: 999px;
-      background: rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.42);
       color: var(--muted);
       font-size: 14px;
       letter-spacing: 0.08em;
@@ -163,7 +163,7 @@
       margin: 0;
       text-align: center;
       text-wrap: balance;
-      text-shadow: 0 16px 45px rgba(56, 38, 60, 0.3);
+      text-shadow: 0 12px 34px rgba(213, 126, 161, 0.2);
     }
 
     h1 {
@@ -213,8 +213,8 @@
       border-radius: 999px;
       padding: 16px 26px;
       color: #160818;
-      background: linear-gradient(135deg, #fff9fb, #f7c4d7 52%, #ffd2ae);
-      box-shadow: 0 16px 38px rgba(194, 120, 151, 0.22);
+      background: linear-gradient(135deg, #fffafd, #ffcfe0 54%, #ffd8d1);
+      box-shadow: 0 16px 38px rgba(207, 120, 154, 0.24);
       cursor: pointer;
       transition: transform 180ms ease, filter 180ms ease, box-shadow 180ms ease;
     }
@@ -222,7 +222,7 @@
     button:hover {
       transform: translateY(-2px) scale(1.02);
       filter: brightness(1.05);
-      box-shadow: 0 20px 48px rgba(194, 120, 151, 0.3);
+      box-shadow: 0 20px 48px rgba(207, 120, 154, 0.32);
     }
 
     button:active {
@@ -230,9 +230,9 @@
     }
 
     .ghost {
-      color: var(--text);
-      background: rgba(255, 246, 250, 0.12);
-      box-shadow: inset 0 0 0 1px rgba(255, 238, 246, 0.2), 0 14px 34px rgba(56, 38, 60, 0.15);
+      color: #7a4a61;
+      background: rgba(255, 255, 255, 0.44);
+      box-shadow: inset 0 0 0 1px rgba(226, 143, 174, 0.22), 0 14px 34px rgba(207, 120, 154, 0.14);
     }
 
     .runaway {
@@ -265,11 +265,11 @@
       min-width: min(100%, 190px);
       flex: 1 1 190px;
       padding: 18px;
-      border: 1px solid rgba(255, 255, 255, 0.18);
+      border: 1px solid rgba(226, 143, 174, 0.2);
       border-radius: 24px;
       color: var(--text);
-      background: rgba(255, 255, 255, 0.08);
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 18px 38px rgba(0, 0, 0, 0.16);
+      background: rgba(255, 255, 255, 0.38);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.58), 0 18px 38px rgba(207, 120, 154, 0.12);
       text-align: left;
       overflow: hidden;
       transition: transform 220ms ease, filter 180ms ease, opacity 300ms ease;
@@ -289,7 +289,7 @@
       filter: blur(22px);
       opacity: 0;
       transform: scale(0.58) translateX(-18%) rotate(-10deg);
-      transition: opacity 900ms ease, transform 1300ms cubic-bezier(.16,.84,.24,1);
+      transition: opacity 1300ms ease, transform 1900ms cubic-bezier(.16,.84,.24,1);
       pointer-events: none;
     }
 
@@ -309,8 +309,8 @@
       position: absolute;
       inset: -42%;
       background:
-        radial-gradient(circle at 30% 42%, rgba(255, 250, 252, 0.78), transparent 18%),
-        radial-gradient(circle at 62% 58%, rgba(246, 173, 200, 0.4), transparent 26%);
+        radial-gradient(circle at 30% 42%, rgba(255, 255, 255, 0.86), transparent 18%),
+        radial-gradient(circle at 62% 58%, rgba(245, 169, 199, 0.46), transparent 26%);
       filter: blur(18px);
       transform: translateX(-28%) scale(0.8);
     }
@@ -322,20 +322,20 @@
     }
 
     .option::after {
-      content: "кубанская";
+      content: "✨ кубанская ✨";
       position: absolute;
       inset: 0;
       z-index: 2;
       display: grid;
       place-items: center;
-      color: var(--text);
+      color: #6d3e56;
       font-size: 24px;
       font-weight: 800;
       letter-spacing: -0.02em;
       opacity: 0;
       filter: blur(8px);
       transform: translateY(12px) scale(0.96);
-      transition: opacity 520ms ease 780ms, transform 680ms cubic-bezier(.18,.9,.2,1) 780ms, filter 680ms ease 780ms;
+      transition: opacity 820ms ease 1050ms, transform 900ms cubic-bezier(.18,.9,.2,1) 1050ms, filter 900ms ease 1050ms;
       pointer-events: none;
     }
 
@@ -369,15 +369,15 @@
     }
 
     .option.revealing .veil {
-      animation: veilIn 1450ms cubic-bezier(.16,.84,.24,1) both;
+      animation: veilIn 2300ms cubic-bezier(.16,.84,.24,1) both;
     }
 
     .option.revealing .veil::before {
-      animation: mistFloat 1550ms cubic-bezier(.16,.84,.24,1) both;
+      animation: mistFloat 2400ms cubic-bezier(.16,.84,.24,1) both;
     }
 
     .option.revealing .veil::after {
-      animation: mistGlide 1450ms cubic-bezier(.16,.84,.24,1) both;
+      animation: mistGlide 2250ms cubic-bezier(.16,.84,.24,1) both;
     }
 
     .option.revealing strong,
@@ -385,7 +385,7 @@
       opacity: 0;
       filter: blur(12px);
       transform: translateY(-10px) scale(0.95);
-      transition-duration: 760ms;
+      transition-duration: 980ms;
     }
 
     .option.revealed::after {
@@ -402,8 +402,8 @@
 
     .kuban {
       z-index: 4;
-      background: linear-gradient(135deg, rgba(255, 210, 174, 0.24), rgba(246, 173, 200, 0.18));
-      box-shadow: 0 18px 44px rgba(194, 120, 151, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.16);
+      background: linear-gradient(135deg, rgba(255, 224, 219, 0.52), rgba(245, 169, 199, 0.32));
+      box-shadow: 0 18px 44px rgba(207, 120, 154, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.48);
       transition: transform 140ms cubic-bezier(.18,1.25,.2,1), filter 160ms ease;
     }
 
@@ -415,19 +415,19 @@
     }
 
     label {
-      color: rgba(255, 248, 255, 0.84);
+      color: rgba(91, 52, 71, 0.76);
       font-size: 16px;
     }
 
     select {
       width: 100%;
       min-height: 62px;
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(226, 143, 174, 0.24);
       border-radius: 22px;
       padding: 0 18px;
-      color: var(--text);
-      background: rgba(54, 40, 67, 0.9);
-      box-shadow: 0 20px 48px rgba(56, 38, 60, 0.2);
+      color: #5b3447;
+      background: rgba(255, 255, 255, 0.86);
+      box-shadow: 0 20px 48px rgba(207, 120, 154, 0.16);
       outline: none;
     }
 
@@ -455,13 +455,13 @@
       justify-content: space-between;
       gap: 18px;
       padding: 14px 16px;
-      border: 1px solid rgba(255, 255, 255, 0.14);
+      border: 1px solid rgba(226, 143, 174, 0.18);
       border-radius: 18px;
-      background: rgba(255, 246, 250, 0.08);
+      background: rgba(255, 255, 255, 0.38);
     }
 
     .summary span:first-child {
-      color: rgba(255, 248, 255, 0.62);
+      color: rgba(91, 52, 71, 0.58);
     }
 
     .summary span:last-child {
@@ -479,7 +479,7 @@
       width: 8px;
       height: 8px;
       border-radius: 999px;
-      background: rgba(255, 255, 255, 0.24);
+      background: rgba(205, 118, 153, 0.2);
     }
 
     .dot.active {
@@ -613,86 +613,86 @@
   <main class="app">
     <section class="card" aria-live="polite">
       <div class="screen active" data-screen="0">
-        <div class="eyebrow">важный протокол выходных</div>
-        <h1>на выходных идем курить кальян?</h1>
+        <div class="eyebrow">💌 важный протокол выходных</div>
+        <h1>на выходных идем курить кальян? 💗</h1>
         <div class="actions question-actions" id="questionActions">
-          <button type="button" data-next>да</button>
-          <button class="ghost runaway" type="button" id="noButton">нет</button>
+          <button type="button" data-next>да 🫶</button>
+          <button class="ghost runaway" type="button" id="noButton">нет 🙈</button>
         </div>
       </div>
 
       <div class="screen" data-screen="1">
-        <h2>Теперь надо выбрать детали</h2>
+        <h2>Теперь надо выбрать детали ✨</h2>
         <div class="actions">
-          <button type="button" data-next>к деталям</button>
+          <button type="button" data-next>к деталям 🎀</button>
         </div>
       </div>
 
       <div class="screen cuisine-screen" data-screen="2">
-        <div class="eyebrow">пункт питания</div>
-        <h2>Выбери кухню до кальяна</h2>
-        <p>Выбор выглядит свободным. Но у вечера уже есть характер.</p>
+        <div class="eyebrow">🍽️ пункт питания</div>
+        <h2>Выбери кухню до кальяна 🍓</h2>
+        <p>Выбор выглядит свободным. Но у вечера уже есть характер 🌸</p>
         <div class="options" id="cuisineOptions">
           <button class="option cuisine" type="button" data-cuisine="Азиатская">
-            <strong>Азиатская</strong>
+            <strong>Азиатская 🍜</strong>
             <span>лапша, соусы, загадочное “остренько”</span>
             <i class="veil" aria-hidden="true"></i>
           </button>
           <button class="option cuisine" type="button" data-cuisine="Грузинская">
-            <strong>Грузинская</strong>
+            <strong>Грузинская 🧀</strong>
             <span>хачапури смотрит уверенно</span>
             <i class="veil" aria-hidden="true"></i>
           </button>
           <button class="option cuisine kuban" type="button" data-cuisine="Кубанская">
-            <strong>Кубанская</strong>
+            <strong>Кубанская 🌻</strong>
             <span>просто решила быть судьбой</span>
             <i class="veil" aria-hidden="true"></i>
           </button>
         </div>
-        <div class="note" id="cuisineNote">нажми на любой вариант</div>
+        <div class="note" id="cuisineNote">нажми на любой вариант 💫</div>
       </div>
 
       <div class="screen" data-screen="3">
-        <div class="eyebrow">суббота</div>
-        <h2>Во сколько встречаемся?</h2>
-        <p>Выбери время. Сайт обещает не спорить, он сегодня вежливый.</p>
+        <div class="eyebrow">🗓️ суббота</div>
+        <h2>Во сколько встречаемся? ⏰</h2>
+        <p>Выбери время. Сайт обещает не спорить, он сегодня вежливый 🫧</p>
         <div class="time-grid">
-          <button type="button" data-time="12:00">12:00</button>
-          <button type="button" data-time="14:00">14:00</button>
-          <button type="button" data-time="16:00">16:00</button>
-          <button type="button" data-time="18:00">18:00</button>
+          <button type="button" data-time="12:00">12:00 ☀️</button>
+          <button type="button" data-time="14:00">14:00 🍰</button>
+          <button type="button" data-time="16:00">16:00 🌷</button>
+          <button type="button" data-time="18:00">18:00 🌙</button>
         </div>
       </div>
 
       <div class="screen" data-screen="4">
-        <div class="eyebrow">главный вкус</div>
-        <h2>Какой вкус кальяна берем?</h2>
-        <p>Четыре варианта без банальностей.</p>
+        <div class="eyebrow">🍯 главный вкус</div>
+        <h2>Какой вкус кальяна берем? 🫶</h2>
+        <p>Четыре варианта без банальностей ✨</p>
         <div class="picker">
-          <label for="flavor">Вкус</label>
+          <label for="flavor">Вкус 🍒</label>
           <select id="flavor">
-            <option>Мед, инжир и черный чай</option>
-            <option>Айва, шафран и белый виноград</option>
-            <option>Груша, гречишный мед и печеное яблоко</option>
-            <option>Личи, розовая вода и бергамот</option>
+            <option>🍯 Мед, инжир и черный чай</option>
+            <option>🌼 Айва, шафран и белый виноград</option>
+            <option>🍐 Груша, гречишный мед и печеное яблоко</option>
+            <option>🌹 Личи, розовая вода и бергамот</option>
           </select>
         </div>
         <div class="actions">
-          <button type="button" data-finish>утвердить вкус</button>
+          <button type="button" data-finish>утвердить вкус 💞</button>
         </div>
       </div>
 
       <div class="screen" data-screen="5">
-        <div class="eyebrow">бронь настроения</div>
-        <h2>Свидание собрано</h2>
+        <div class="eyebrow">🎀 бронь настроения</div>
+        <h2>Свидание собрано 💖</h2>
         <div class="summary">
-          <div><span>Когда</span><span id="summaryTime">суббота</span></div>
-          <div><span>Кухня</span><span>кубанская</span></div>
-          <div><span>Кальян</span><span id="summaryFlavor">Мед, инжир и черный чай</span></div>
-          <div><span>Гость вечера</span><span>Даша</span></div>
+          <div><span>🗓️ Когда</span><span id="summaryTime">суббота</span></div>
+          <div><span>🍽️ Кухня</span><span>кубанская 🌻</span></div>
+          <div><span>💨 Кальян</span><span id="summaryFlavor">🍯 Мед, инжир и черный чай</span></div>
+          <div><span>💗 Гость вечера</span><span>Даша</span></div>
         </div>
         <div class="actions">
-          <button type="button" id="happyButton">ура</button>
+          <button type="button" id="happyButton">ура 🎉</button>
         </div>
         <div class="note" id="finalNote"></div>
       </div>
@@ -783,25 +783,25 @@
       cuisineLocked = true;
       cuisineOptions.classList.add('is-choosing');
       button.classList.add('revealing');
-      cuisineNote.textContent = 'секунду... выбор мягко растворяется';
+      cuisineNote.textContent = 'секунду... выбор мягко растворяется 🫧';
 
       setTimeout(() => {
-        cuisineNote.textContent = 'туман пересобирает вечер';
-      }, 620);
+        cuisineNote.textContent = 'туман пересобирает вечер 🌸';
+      }, 900);
 
       setTimeout(() => {
         button.classList.add('revealed');
-        cuisineNote.textContent = 'и там, конечно, кубанская';
-      }, 1120);
+        cuisineNote.textContent = 'и там, конечно, кубанская ✨';
+      }, 1700);
 
-      setTimeout(() => show(3), 2350);
+      setTimeout(() => show(3), 4200);
     }
 
     function launchCelebration(origin) {
       const rect = origin.getBoundingClientRect();
       const startX = rect.left + rect.width / 2;
       const startY = rect.top + rect.height / 2;
-      const colors = ['#fff7fb', '#f7c4d7', '#ffd2ae', '#d5c2ec', '#c9d7f3'];
+      const colors = ['#fff7fb', '#f5a9c7', '#ffd1c8', '#f2c8ea', '#e7dfff'];
 
       for (let burst = 0; burst < 3; burst += 1) {
         setTimeout(() => {
@@ -856,7 +856,7 @@
 
     document.querySelectorAll('[data-time]').forEach((button) => {
       button.addEventListener('click', () => {
-        selectedTime = `суббота, ${button.dataset.time}`;
+        selectedTime = `суббота, ${button.dataset.time} ✨`;
         summaryTime.textContent = selectedTime;
         show(4);
       });
@@ -868,8 +868,8 @@
     });
 
     happyButton.addEventListener('click', () => {
-      finalNote.textContent = 'отлично, план официально выглядит вкусно';
-      happyButton.textContent = 'ура!';
+      finalNote.textContent = 'отлично, план официально выглядит вкусно 💗';
+      happyButton.textContent = 'ура! 🎉';
       launchCelebration(happyButton);
     });
   </script>
