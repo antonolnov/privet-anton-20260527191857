@@ -196,6 +196,12 @@
       gap: 14px;
     }
 
+    .question-actions {
+      position: relative;
+      min-height: 74px;
+      align-items: center;
+    }
+
     button,
     select {
       font: inherit;
@@ -230,16 +236,10 @@
     }
 
     .runaway {
-      will-change: transform, left, top;
-    }
-
-    .runaway.free {
-      position: fixed;
-      z-index: 20;
-      transition:
-        left 560ms cubic-bezier(.18,.95,.2,1),
-        top 560ms cubic-bezier(.18,.95,.2,1),
-        transform 560ms cubic-bezier(.18,.95,.2,1);
+      position: relative;
+      z-index: 2;
+      will-change: transform;
+      transition: transform 420ms cubic-bezier(.2,.9,.16,1);
     }
 
     .note {
@@ -260,20 +260,89 @@
       background: rgba(255, 255, 255, 0.08);
       box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 18px 38px rgba(0, 0, 0, 0.16);
       text-align: left;
-      transition: transform 260ms cubic-bezier(.2,.9,.22,1), filter 180ms ease;
-      will-change: transform;
+      overflow: hidden;
+      transition: transform 220ms ease, filter 180ms ease, opacity 300ms ease;
+      will-change: transform, filter;
+    }
+
+    .option::before {
+      content: "";
+      position: absolute;
+      inset: -35%;
+      z-index: 0;
+      background:
+        radial-gradient(circle at 28% 35%, rgba(255, 255, 255, 0.82), transparent 18%),
+        radial-gradient(circle at 68% 52%, rgba(255, 184, 109, 0.72), transparent 22%),
+        radial-gradient(circle at 46% 70%, rgba(255, 116, 191, 0.62), transparent 24%);
+      filter: blur(18px);
+      opacity: 0;
+      transform: scale(0.72) rotate(-8deg);
+      transition: opacity 420ms ease, transform 720ms ease;
+      pointer-events: none;
+    }
+
+    .option::after {
+      content: "кубанская";
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      display: grid;
+      place-items: center;
+      color: var(--text);
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      opacity: 0;
+      transform: translateY(10px) scale(0.96);
+      transition: opacity 340ms ease 260ms, transform 340ms ease 260ms;
+      pointer-events: none;
     }
 
     .option strong {
+      position: relative;
+      z-index: 1;
       display: block;
       margin-bottom: 7px;
       font-size: 20px;
+      transition: opacity 260ms ease, transform 420ms ease, filter 420ms ease;
     }
 
     .option span {
+      position: relative;
+      z-index: 1;
       color: rgba(255, 248, 255, 0.68);
       font-size: 14px;
       line-height: 1.35;
+      transition: opacity 260ms ease, transform 420ms ease, filter 420ms ease;
+    }
+
+    .option.revealing {
+      pointer-events: none;
+      transform: scale(1.03);
+      filter: brightness(1.12) saturate(1.15);
+    }
+
+    .option.revealing::before {
+      opacity: 1;
+      transform: scale(1.35) rotate(10deg);
+    }
+
+    .option.revealing strong,
+    .option.revealing span {
+      opacity: 0;
+      filter: blur(10px);
+      transform: translateY(-8px) scale(0.94);
+    }
+
+    .option.revealed::after {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    .options.is-choosing .option:not(.revealing) {
+      opacity: 0.38;
+      filter: blur(1px) saturate(0.7);
+      pointer-events: none;
     }
 
     .kuban {
@@ -378,9 +447,19 @@
         flex-direction: column;
       }
 
+      .question-actions {
+        min-height: 138px;
+      }
+
       button,
       .option {
         width: 100%;
+      }
+
+      .question-actions button {
+        width: auto;
+        min-width: 96px;
+        align-self: center;
       }
 
       .time-grid {
@@ -426,7 +505,7 @@
       <div class="screen active" data-screen="0">
         <div class="eyebrow">важный протокол выходных</div>
         <h1>на выходных идем курить кальян?</h1>
-        <div class="actions">
+        <div class="actions question-actions" id="questionActions">
           <button type="button" data-next>да</button>
           <button class="ghost runaway" type="button" id="noButton">нет</button>
         </div>
@@ -442,7 +521,7 @@
       <div class="screen cuisine-screen" data-screen="2">
         <div class="eyebrow">пункт питания</div>
         <h2>Выбери кухню до кальяна</h2>
-        <p>Тут все честно: можно нажать куда угодно, но кубанская очень старается быть выбранной.</p>
+        <p>Выбор выглядит свободным. Но у вечера уже есть характер.</p>
         <div class="options" id="cuisineOptions">
           <button class="option cuisine" type="button" data-cuisine="Азиатская">
             <strong>Азиатская</strong>
@@ -452,12 +531,12 @@
             <strong>Грузинская</strong>
             <span>хачапури смотрит уверенно</span>
           </button>
-          <button class="option cuisine kuban" type="button" data-cuisine="Кубанская" id="kubanButton">
+          <button class="option cuisine kuban" type="button" data-cuisine="Кубанская">
             <strong>Кубанская</strong>
             <span>просто решила быть судьбой</span>
           </button>
         </div>
-        <div class="note" id="cuisineNote">кубанская уже где-то рядом</div>
+        <div class="note" id="cuisineNote">нажми на любой вариант</div>
       </div>
 
       <div class="screen" data-screen="3">
@@ -519,11 +598,11 @@
   <script>
     const screens = [...document.querySelectorAll('.screen')];
     const dots = [...document.querySelectorAll('.dot')];
+    const card = document.querySelector('.card');
+    const questionActions = document.getElementById('questionActions');
     const noButton = document.getElementById('noButton');
     const cuisineOptions = document.getElementById('cuisineOptions');
     const cuisineNote = document.getElementById('cuisineNote');
-    const kubanButton = document.getElementById('kubanButton');
-    const decoyCuisineButtons = [...document.querySelectorAll('.cuisine:not(.kuban)')];
     const flavor = document.getElementById('flavor');
     const summaryTime = document.getElementById('summaryTime');
     const summaryFlavor = document.getElementById('summaryFlavor');
@@ -531,7 +610,8 @@
     const happyButton = document.getElementById('happyButton');
     let screen = 0;
     let selectedTime = 'суббота';
-    let noCount = 0;
+    let noOffset = { x: 0, y: 0 };
+    let cuisineLocked = false;
 
     function show(nextScreen) {
       screen = nextScreen;
@@ -543,9 +623,10 @@
       return Math.min(Math.max(value, min), max);
     }
 
-    function jumpNoButton(event) {
+    function moveNoButton(event) {
       const rect = noButton.getBoundingClientRect();
-      const pad = 16;
+      const bounds = card.getBoundingClientRect();
+      const pad = 24;
       const pointerX = event?.clientX ?? window.innerWidth / 2;
       const pointerY = event?.clientY ?? window.innerHeight / 2;
       const centerX = rect.left + rect.width / 2;
@@ -559,82 +640,57 @@
       }
 
       const length = Math.hypot(dx, dy) || 1;
-      const distance = 190 + (noCount % 3) * 38;
-      const targetLeft = clamp(rect.left + (dx / length) * distance + (Math.random() - 0.5) * 70, pad, window.innerWidth - rect.width - pad);
-      const targetTop = clamp(rect.top + (dy / length) * distance + (Math.random() - 0.5) * 70, pad, window.innerHeight - rect.height - pad);
+      let shiftX = (dx / length) * 92 + (Math.random() - 0.5) * 34;
+      let shiftY = (dy / length) * 38 + (Math.random() - 0.5) * 18;
+      const finalLeft = clamp(rect.left + shiftX, bounds.left + pad, bounds.right - rect.width - pad);
+      const finalTop = clamp(rect.top + shiftY, bounds.top + pad, bounds.bottom - rect.height - pad);
 
-      if (!noButton.classList.contains('free')) {
-        noButton.style.left = `${rect.left}px`;
-        noButton.style.top = `${rect.top}px`;
-        noButton.classList.add('free');
-        noButton.getBoundingClientRect();
-      }
-
-      requestAnimationFrame(() => {
-        noButton.style.left = `${targetLeft}px`;
-        noButton.style.top = `${targetTop}px`;
-        noButton.style.transform = `rotate(${Math.random() * 16 - 8}deg)`;
-      });
-
-      noCount += 1;
+      noOffset.x += finalLeft - rect.left;
+      noOffset.y += finalTop - rect.top;
+      noOffset.x = clamp(noOffset.x, -170, 170);
+      noOffset.y = clamp(noOffset.y, -58, 58);
+      noButton.style.transform = `translate(${noOffset.x}px, ${noOffset.y}px) rotate(${noOffset.x * 0.035}deg)`;
     }
 
-    function chooseKuban() {
-      cuisineNote.textContent = 'кубанская выбрана. она очень убедительная.';
-      setTimeout(() => show(3), 520);
+    function chooseCuisine(button) {
+      if (cuisineLocked) return;
+      cuisineLocked = true;
+      cuisineOptions.classList.add('is-choosing');
+      button.classList.add('revealing');
+      cuisineNote.textContent = 'секунду... вариант растворяется в тумане';
+
+      setTimeout(() => {
+        button.classList.add('revealed');
+        cuisineNote.textContent = 'и там, конечно, кубанская';
+      }, 360);
+
+      setTimeout(() => show(3), 1450);
     }
 
     document.querySelectorAll('[data-next]').forEach((button) => {
       button.addEventListener('click', () => show(screen + 1));
     });
 
-    noButton.addEventListener('pointerenter', jumpNoButton);
+    questionActions.addEventListener('pointermove', (event) => {
+      if (screen !== 0) return;
+      const rect = noButton.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+      const distance = Math.hypot(centerX - event.clientX, centerY - event.clientY);
+
+      if (distance < 120) {
+        moveNoButton(event);
+      }
+    });
+
+    noButton.addEventListener('pointerenter', moveNoButton);
     noButton.addEventListener('pointerdown', (event) => {
       event.preventDefault();
-      jumpNoButton(event);
-    });
-
-    cuisineOptions.addEventListener('pointermove', (event) => {
-      const area = cuisineOptions.getBoundingClientRect();
-      const kubanCenterX = kubanButton.offsetLeft + kubanButton.offsetWidth / 2;
-      const kubanCenterY = kubanButton.offsetTop + kubanButton.offsetHeight / 2;
-      const pointerX = event.clientX - area.left;
-      const pointerY = event.clientY - area.top;
-      const kubanX = clamp((pointerX - kubanCenterX) * 0.62, -150, 150);
-      const kubanY = clamp((pointerY - kubanCenterY) * 0.62, -86, 86);
-
-      kubanButton.style.transform = `translate(${kubanX}px, ${kubanY}px) scale(1.1) rotate(${kubanX * 0.025}deg)`;
-      kubanButton.style.filter = 'brightness(1.12)';
-
-      decoyCuisineButtons.forEach((button) => {
-        const centerX = button.offsetLeft + button.offsetWidth / 2;
-        const centerY = button.offsetTop + button.offsetHeight / 2;
-        const dx = centerX - pointerX;
-        const dy = centerY - pointerY;
-        const distance = Math.hypot(dx, dy) || 1;
-        const force = clamp((240 - distance) / 240, 0, 1);
-        const escapeX = clamp((dx / distance) * force * 130, -120, 120);
-        const escapeY = clamp((dy / distance) * force * 90, -78, 78);
-
-        button.style.transform = `translate(${escapeX}px, ${escapeY}px) scale(${1 - force * 0.05}) rotate(${escapeX * -0.025}deg)`;
-        button.style.filter = force > 0.25 ? 'brightness(0.82)' : '';
-      });
-
-      cuisineNote.textContent = 'кубанская уверенно идет к курсору';
-    });
-
-    cuisineOptions.addEventListener('pointerleave', () => {
-      kubanButton.style.transform = '';
-      kubanButton.style.filter = '';
-      decoyCuisineButtons.forEach((button) => {
-        button.style.transform = '';
-        button.style.filter = '';
-      });
-      cuisineNote.textContent = 'кубанская уже где-то рядом';
+      moveNoButton(event);
     });
 
     document.querySelectorAll('.cuisine').forEach((button) => {
-      button.addEventListener('click', chooseKuban);
+      button.addEventListener('click', () => chooseCuisine(button));
     });
 
     document.querySelectorAll('[data-time]').forEach((button) => {
