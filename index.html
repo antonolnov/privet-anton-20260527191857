@@ -238,8 +238,19 @@
     .runaway {
       position: relative;
       z-index: 2;
-      will-change: transform;
+      will-change: left, top, transform;
       transition: transform 420ms cubic-bezier(.2,.9,.16,1);
+    }
+
+    .runaway.detached {
+      position: fixed;
+      z-index: 30;
+      width: auto;
+      min-width: 86px;
+      transition:
+        left 520ms cubic-bezier(.18,.95,.18,1),
+        top 520ms cubic-bezier(.18,.95,.18,1),
+        transform 520ms cubic-bezier(.18,.95,.18,1);
     }
 
     .note {
@@ -462,6 +473,11 @@
         align-self: center;
       }
 
+      .runaway.detached {
+        width: auto;
+        min-width: 86px;
+      }
+
       .time-grid {
         grid-template-columns: 1fr;
         width: 100%;
@@ -598,8 +614,6 @@
   <script>
     const screens = [...document.querySelectorAll('.screen')];
     const dots = [...document.querySelectorAll('.dot')];
-    const card = document.querySelector('.card');
-    const questionActions = document.getElementById('questionActions');
     const noButton = document.getElementById('noButton');
     const cuisineOptions = document.getElementById('cuisineOptions');
     const cuisineNote = document.getElementById('cuisineNote');
@@ -610,13 +624,17 @@
     const happyButton = document.getElementById('happyButton');
     let screen = 0;
     let selectedTime = 'суббота';
-    let noOffset = { x: 0, y: 0 };
+    let noDetached = false;
     let cuisineLocked = false;
 
     function show(nextScreen) {
       screen = nextScreen;
       screens.forEach((item, index) => item.classList.toggle('active', index === screen));
       dots.forEach((dot, index) => dot.classList.toggle('active', index === screen));
+
+      if (screen !== 0) {
+        noButton.style.display = 'none';
+      }
     }
 
     function clamp(value, min, max) {
@@ -625,8 +643,7 @@
 
     function moveNoButton(event) {
       const rect = noButton.getBoundingClientRect();
-      const bounds = card.getBoundingClientRect();
-      const pad = 24;
+      const pad = 18;
       const pointerX = event?.clientX ?? window.innerWidth / 2;
       const pointerY = event?.clientY ?? window.innerHeight / 2;
       const centerX = rect.left + rect.width / 2;
@@ -640,16 +657,28 @@
       }
 
       const length = Math.hypot(dx, dy) || 1;
-      let shiftX = (dx / length) * 92 + (Math.random() - 0.5) * 34;
-      let shiftY = (dy / length) * 38 + (Math.random() - 0.5) * 18;
-      const finalLeft = clamp(rect.left + shiftX, bounds.left + pad, bounds.right - rect.width - pad);
-      const finalTop = clamp(rect.top + shiftY, bounds.top + pad, bounds.bottom - rect.height - pad);
 
-      noOffset.x += finalLeft - rect.left;
-      noOffset.y += finalTop - rect.top;
-      noOffset.x = clamp(noOffset.x, -170, 170);
-      noOffset.y = clamp(noOffset.y, -58, 58);
-      noButton.style.transform = `translate(${noOffset.x}px, ${noOffset.y}px) rotate(${noOffset.x * 0.035}deg)`;
+      if (!noDetached) {
+        noButton.style.left = `${rect.left}px`;
+        noButton.style.top = `${rect.top}px`;
+        noButton.style.transform = 'rotate(0deg)';
+        noButton.classList.add('detached');
+        document.body.appendChild(noButton);
+        noDetached = true;
+        noButton.getBoundingClientRect();
+      }
+
+      const travel = Math.min(Math.max(window.innerWidth, window.innerHeight) * 0.24, 330);
+      const driftX = (Math.random() - 0.5) * 90;
+      const driftY = (Math.random() - 0.5) * 90;
+      const finalLeft = clamp(rect.left + (dx / length) * travel + driftX, pad, window.innerWidth - rect.width - pad);
+      const finalTop = clamp(rect.top + (dy / length) * travel + driftY, pad, window.innerHeight - rect.height - pad);
+
+      requestAnimationFrame(() => {
+        noButton.style.left = `${finalLeft}px`;
+        noButton.style.top = `${finalTop}px`;
+        noButton.style.transform = `rotate(${(finalLeft - rect.left) * 0.035}deg)`;
+      });
     }
 
     function chooseCuisine(button) {
@@ -671,14 +700,14 @@
       button.addEventListener('click', () => show(screen + 1));
     });
 
-    questionActions.addEventListener('pointermove', (event) => {
+    document.addEventListener('pointermove', (event) => {
       if (screen !== 0) return;
       const rect = noButton.getBoundingClientRect();
       const centerX = rect.left + rect.width / 2;
       const centerY = rect.top + rect.height / 2;
       const distance = Math.hypot(centerX - event.clientX, centerY - event.clientY);
 
-      if (distance < 120) {
+      if (distance < 145) {
         moveNoButton(event);
       }
     });
